@@ -4,70 +4,117 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>사업성 분석 계산기 - Renewables</title>
-<meta name="description" content="태양광 발전소 사업성 분석. IRR, NPV, 회수기간을 즉시 계산하세요.">
+<meta name="description" content="태양광 발전소 사업성 분석. IRR, NPV, 세금까지 즉시 계산.">
 <link rel="stylesheet" href="assets/style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   .calc-layout { display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; margin-top: 24px; }
   @media (max-width: 1024px) { .calc-layout { grid-template-columns: 1fr; } }
   
-  .input-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; margin-bottom: 20px; }
-  .input-section h3 { font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; color: var(--text-primary); }
+  .input-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; margin-bottom: 20px; }
+  .input-section h3 { font-size: 18px; margin-bottom: 18px; }
   
-  .input-row { display: grid; grid-template-columns: 140px 1fr auto; gap: 12px; align-items: center; margin-bottom: 14px; }
-  .input-row label { color: var(--text-secondary); font-size: 14px; }
-  .input-row input, .input-row select {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border);
-    color: var(--text-primary);
-    padding: 10px 14px;
-    border-radius: 8px;
-    font-size: 15px;
-    width: 100%;
-    font-family: inherit;
+  .field-row { display: grid; grid-template-columns: 130px 1fr 54px; gap: 10px; align-items: center; margin-bottom: 6px; }
+  .field-row label { color: var(--text-secondary); font-size: 13.5px; line-height: 1.3; }
+  .field-row input, .field-row select {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    color: var(--text-primary); padding: 9px 12px; border-radius: 8px;
+    font-size: 15px; width: 100%; font-family: inherit;
   }
-  .input-row input:focus { outline: none; border-color: var(--blue); }
-  .input-unit { color: var(--text-muted); font-size: 13px; width: 60px; }
+  .field-row input:focus, .field-row select:focus { outline: none; border-color: var(--blue); }
+  .field-row input:disabled { cursor: not-allowed; }
+  .field-row .unit { color: var(--text-muted); font-size: 12px; text-align: center; }
+  
+  .avg-row {
+    display: flex; align-items: center; gap: 6px;
+    margin: 0 0 14px 140px; font-size: 11.5px; color: var(--text-muted);
+  }
+  .avg-row input[type="checkbox"] { cursor: pointer; accent-color: var(--green); }
+  .avg-row label { cursor: pointer; }
+  .avg-row .tag { background: rgba(16,185,129,0.1); color: var(--green); padding: 1px 6px; border-radius: 4px; font-size: 10.5px; }
+  
+  .remark {
+    background: rgba(59,130,246,0.06); border-left: 2px solid rgba(59,130,246,0.4);
+    padding: 8px 12px; border-radius: 4px;
+    font-size: 11.5px; color: var(--text-muted); line-height: 1.6;
+    margin: 4px 0 14px 140px;
+  }
+  
+  .tip {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(59,130,246,0.2); color: var(--blue);
+    font-size: 11px; cursor: help; margin-left: 4px;
+    position: relative;
+  }
+  .tip:hover::after {
+    content: attr(data-tip);
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #0f172a; border: 1px solid var(--blue);
+    padding: 8px 12px; border-radius: 6px; font-size: 12px;
+    color: var(--text-primary); width: 240px; z-index: 10;
+    line-height: 1.5; text-align: left;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  
+  .radio-group { display: flex; gap: 6px; margin-bottom: 10px; }
+  .radio-group label {
+    flex: 1; padding: 7px 10px; border-radius: 6px;
+    background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+    color: var(--text-secondary); cursor: pointer; font-size: 12.5px;
+    text-align: center; transition: all 0.2s;
+  }
+  .radio-group input { display: none; }
+  .radio-group input:checked + label {
+    background: var(--gradient); color: white; border-color: transparent;
+    font-weight: 600;
+  }
   
   .btn-small {
-    background: rgba(59, 130, 246, 0.15);
-    border: 1px solid rgba(59, 130, 246, 0.3);
-    color: var(--blue);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 12px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
+    background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3);
+    color: var(--blue); padding: 6px 12px; border-radius: 6px;
+    font-size: 12px; cursor: pointer; font-weight: 500;
   }
-  .btn-small:hover:not(:disabled) { background: rgba(59,130,246,0.25); }
-  .btn-small:disabled { opacity: 0.4; cursor: not-allowed; background: rgba(100,116,139,0.1); border-color: rgba(100,116,139,0.2); color: var(--text-muted); }
   
   .result-sticky { position: sticky; top: 90px; }
-  .result-card { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); border: 1px solid rgba(59,130,246,0.3); border-radius: 16px; padding: 24px; margin-bottom: 16px; }
-  .result-card h3 { font-size: 16px; margin-bottom: 16px; color: var(--text-primary); }
-  .result-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-  .result-row:last-child { border: none; }
-  .result-row .k { color: var(--text-secondary); font-size: 14px; }
-  .result-row .v { font-weight: 700; font-size: 16px; color: var(--text-primary); }
-  .result-highlight { background: rgba(16,185,129,0.15); padding: 16px; border-radius: 10px; border-left: 3px solid var(--green); margin-top: 12px; }
-  .result-highlight .lbl { color: var(--green); font-size: 13px; margin-bottom: 4px; }
-  .result-highlight .val { font-size: 28px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  
-  .warning-box { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; padding: 16px; border-radius: 10px; margin-bottom: 16px; font-size: 14px; }
-  .info-box { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); color: #93c5fd; padding: 14px; border-radius: 10px; margin-bottom: 16px; font-size: 13px; line-height: 1.7; }
-  
-  .toggle-group { display: flex; gap: 8px; margin-bottom: 12px; }
-  .toggle-group button {
-    flex: 1; padding: 8px; border-radius: 6px; background: rgba(255,255,255,0.05);
-    border: 1px solid var(--border); color: var(--text-secondary); cursor: pointer; font-size: 13px;
+  .result-card {
+    background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1));
+    border: 1px solid rgba(59,130,246,0.3); border-radius: 16px;
+    padding: 22px; margin-bottom: 14px;
   }
-  .toggle-group button.active { background: var(--gradient); color: white; border-color: transparent; }
+  .result-card h3 { font-size: 15px; margin-bottom: 14px; }
+  .result-row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .result-row:last-child { border: none; }
+  .result-row .k { color: var(--text-secondary); font-size: 13px; }
+  .result-row .v { font-weight: 700; font-size: 15px; }
+  .result-highlight { background: rgba(16,185,129,0.15); padding: 14px; border-radius: 10px; border-left: 3px solid var(--green); margin-top: 10px; }
+  .result-highlight .lbl { color: var(--green); font-size: 12px; margin-bottom: 4px; }
+  .result-highlight .val { font-size: 26px; font-weight: 800; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  
+  .tax-card { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); }
+  .tax-card h3 { color: #fbbf24; }
+  
+  .warning-box { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); color: #fbbf24; padding: 14px; border-radius: 10px; margin-bottom: 14px; font-size: 13.5px; }
+  .info-box { background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); color: #93c5fd; padding: 12px 14px; border-radius: 10px; margin-bottom: 12px; font-size: 12.5px; line-height: 1.65; }
+  
+  .price-summary {
+    background: rgba(16,185,129,0.05); border: 1px solid rgba(16,185,129,0.2);
+    padding: 12px 14px; border-radius: 8px; margin: 10px 0;
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .price-summary strong { color: var(--green); font-size: 16px; }
+  
+  .expert-section {
+    background: linear-gradient(135deg, rgba(59,130,246,0.08), rgba(16,185,129,0.08));
+    border: 1px solid rgba(59,130,246,0.2); border-radius: 16px;
+    padding: 24px; margin-top: 24px; text-align: center;
+  }
+  .expert-section h3 { color: var(--text-primary); margin-bottom: 10px; }
+  .expert-section p { color: var(--text-secondary); font-size: 14px; margin-bottom: 16px; }
   
   @media print {
-    .nav, .footer, .btn, .btn-small, .toggle-group { display: none !important; }
+    .nav, .footer, .btn, .btn-small, .radio-group { display: none !important; }
     body { background: white; color: black; }
-    .result-card, .input-section, .chart-wrap { border: 1px solid #ccc; break-inside: avoid; }
   }
 </style>
 </head>
@@ -86,209 +133,317 @@
 
 <div class="container">
   <h1 class="section-title" style="text-align:left; margin-bottom:8px">📐 태양광 사업성 분석</h1>
-  <p style="color:var(--text-secondary); margin-bottom:24px">Excel 재무모델 수준의 분석을 브라우저에서 즉시 확인하세요 · 2025년 시장 평균 기준 자동 세팅</p>
+  <p style="color:var(--text-secondary); margin-bottom:20px">✅ 체크박스 = 시장 평균 적용 · 체크 해제 = 직접 입력</p>
 
   <div class="info-box">
-    💡 <strong>현재 기본값</strong>: SMP 연평균 111.96원/kWh(2025년 실적) + REC 70,000원 기준 · 필요 시 직접 수정 가능 · 풍력은 준비 중입니다
+    💡 <strong>2025년 시장 평균</strong>: SMP 111.96원/kWh + REC 70,000원 × 가중치 = 전력판매가 자동 계산
   </div>
 
   <div id="large_project_warning" class="warning-box" style="display:none">
-    ⚠️ <strong>1MW 이상 대용량 프로젝트</strong>는 인허가·계통연계·금융조건이 크게 달라 별도 분석이 필요합니다. 
-    <a href="mailto:contact@renewables.co.kr" style="color:#fbbf24; text-decoration:underline">contact@renewables.co.kr</a>로 문의해주세요.
+    ⚠️ <strong>1MW 이상 대용량</strong>은 인허가·계통연계·금융조건이 크게 달라 별도 분석 필요. 
+    <a href="mailto:contact@renewables.co.kr" style="color:#fbbf24; text-decoration:underline">contact@renewables.co.kr</a> 문의
   </div>
 
   <div class="calc-layout">
-    <!-- 좌측: 입력 영역 -->
     <div>
+      
       <!-- [1] 투자비 -->
       <div class="input-section">
         <h3>💵 1. 투자비</h3>
-        <div class="input-row">
+        <div class="field-row">
           <label>발전용량</label>
           <input type="number" id="capacity_kw" value="100" min="1" max="5000" step="10">
-          <span class="input-unit">kW</span>
+          <span class="unit">kW</span>
         </div>
-        <div class="input-row">
+        <div class="field-row">
           <label>총 투자비</label>
-          <input type="number" id="capex_total" value="230" step="1">
-          <span class="input-unit">백만원</span>
+          <input type="number" id="capex_total" value="230" step="1" disabled style="opacity:0.5">
+          <span class="unit">백만원</span>
         </div>
-        <div style="text-align:right; margin-top:4px">
-          <button class="btn-small" id="btn_default_capex">일반 (2.3억/100kW)</button>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_capex" data-avg-checkbox data-target="capex_total" checked>
+          <label for="cb_capex">✅ 평균값 사용 <span class="tag">2.3억/100kW</span></label>
         </div>
-        <p style="font-size:12px; color:var(--text-muted); margin-top:10px">
-          ※ 200kW 초과는 프로젝트별 편차가 커서 직접 입력 권장
-        </p>
+        <div id="capex_warn" style="display:none; font-size:12px; color:#fbbf24; margin-left:140px">
+          ⚠️ 200kW 초과는 프로젝트별 편차 커서 직접 입력 필요
+        </div>
       </div>
 
       <!-- [2] 자금조달 -->
       <div class="input-section">
         <h3>💰 2. 자금조달</h3>
-        <div class="input-row">
+        <div class="field-row">
           <label>차입금</label>
           <input type="number" id="loan_amount" value="161" step="1">
-          <span class="input-unit">백만원</span>
+          <span class="unit">백만원</span>
         </div>
-        <div class="input-row">
+        <p style="font-size:11px; color:var(--text-muted); margin:-2px 0 14px 140px">수기 입력 · 자기자본 = 투자비 − 차입금</p>
+        
+        <div class="field-row">
           <label>이자율</label>
-          <input type="number" id="interest_rate" value="5.0" step="0.1" min="0" max="20">
-          <span class="input-unit">%</span>
+          <input type="number" id="interest_rate" value="5.0" step="0.1" min="0" max="20" disabled style="opacity:0.5">
+          <span class="unit">%</span>
         </div>
-        <div class="input-row">
+        <div class="avg-row">
+          <input type="checkbox" id="cb_interest" data-avg-checkbox data-target="interest_rate" checked>
+          <label for="cb_interest">✅ 평균값 사용 <span class="tag">5.0%</span></label>
+        </div>
+        
+        <div class="field-row">
           <label>거치기간</label>
           <input type="number" id="grace_years" value="2" min="0" max="25" step="1">
-          <span class="input-unit">년</span>
+          <span class="unit">년</span>
         </div>
-        <div class="input-row">
+        <p style="font-size:11px; color:var(--text-muted); margin:-2px 0 10px 140px">최대 25년</p>
+        
+        <div class="field-row">
           <label>상환기간</label>
           <input type="number" id="repay_years" value="18" min="1" max="25" step="1">
-          <span class="input-unit">년</span>
+          <span class="unit">년</span>
         </div>
-        <div style="text-align:right; margin-top:4px">
-          <button class="btn-small" id="btn_default_loan">일반 (70%, 2년거치/18년상환, 5%)</button>
+        
+        <div style="text-align:right; margin-top:10px">
+          <button class="btn-small" id="btn_default_loan">🎯 일반 (70% / 2년거치 18년상환 / 5%)</button>
         </div>
       </div>
 
-      <!-- [3] 수익 가정 -->
+      <!-- [3] 수익 가정 (SMP + REC) -->
       <div class="input-section">
         <h3>⚡ 3. 수익 가정</h3>
-        <div class="input-row">
-          <label>FIT 판매가<br><span style="font-size:11px; color:var(--text-muted)">SMP+REC 통합</span></label>
-          <input type="number" id="fit_price" value="195.96" step="0.1">
-          <span class="input-unit">원/kWh</span>
+        
+        <div class="field-row">
+          <label>SMP 가격</label>
+          <input type="number" id="smp_price" value="111.96" step="0.01" disabled style="opacity:0.5">
+          <span class="unit">원/kWh</span>
         </div>
-        <div class="input-row">
+        <div class="avg-row">
+          <input type="checkbox" id="cb_smp" data-avg-checkbox data-target="smp_price" checked>
+          <label for="cb_smp">✅ 2025년 평균 <span class="tag">111.96원</span></label>
+        </div>
+        
+        <div class="field-row">
+          <label>REC 가격</label>
+          <input type="number" id="rec_price" value="70000" step="1000" disabled style="opacity:0.5">
+          <span class="unit">원</span>
+        </div>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_rec" data-avg-checkbox data-target="rec_price" checked>
+          <label for="cb_rec">✅ 2025년 평균 <span class="tag">70,000원</span></label>
+        </div>
+        
+        <div class="field-row">
+          <label>REC 가중치</label>
+          <select id="rec_type"></select>
+          <span class="unit">-</span>
+        </div>
+        <p style="font-size:11px; color:var(--text-muted); margin:-2px 0 8px 140px">용량·입지에 따라 자동 추천 · 변경 가능</p>
+        
+        <div class="price-summary">
+          📊 전력판매가 = SMP + (REC × <span id="rec_weight_display">1.0</span> / 1000)<br>
+          = <strong id="sales_price_display">181.96원/kWh</strong>
+        </div>
+        <input type="hidden" id="computed_sales_price" value="181.96">
+        
+        <!-- 이용률 -->
+        <div class="radio-group" style="margin-top:14px">
+          <input type="radio" name="util_primary" id="up_pct" value="pct" checked>
+          <label for="up_pct">이용률(%) 주 입력</label>
+          <input type="radio" name="util_primary" id="up_hr" value="hr">
+          <label for="up_hr">시간/일 주 입력</label>
+        </div>
+        
+        <div class="field-row">
           <label>이용률</label>
-          <input type="number" id="utilization" value="16.67" step="0.01" min="1" max="50">
-          <span class="input-unit">%</span>
+          <input type="number" id="utilization_pct" value="16.67" step="0.01" min="1" max="50">
+          <span class="unit">%</span>
         </div>
-        <div class="input-row">
-          <label>모듈 효율감소</label>
-          <input type="number" id="module_decay" value="0.5" step="0.1" min="0" max="5">
-          <span class="input-unit">%/년</span>
+        <div class="field-row">
+          <label>시간/일</label>
+          <input type="number" id="utilization_hr" value="4.00" step="0.01" min="0" max="24" disabled style="opacity:0.5">
+          <span class="unit">h/일</span>
+        </div>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_util" data-avg-checkbox data-target="utilization_pct" checked>
+          <label for="cb_util">✅ 평균값 사용 <span class="tag">16.67% = 4.0h/일</span></label>
+        </div>
+        
+        <div class="field-row">
+          <label>모듈 효율감소<span class="tip" data-tip="최신 Tier 1 모듈은 연 0.2% 미만 보증. 구형(~2015)은 0.5~0.8%">?</span></label>
+          <input type="number" id="module_decay" value="0.20" step="0.05" min="0" max="2" disabled style="opacity:0.5">
+          <span class="unit">%/년</span>
+        </div>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_decay" data-avg-checkbox data-target="module_decay" checked>
+          <label for="cb_decay">✅ 평균값 <span class="tag">0.20%/년</span></label>
         </div>
       </div>
 
-      <!-- [4] 운영비용 -->
+      <!-- [4] 운영 비용 -->
       <div class="input-section">
         <h3>🛠️ 4. 운영 비용</h3>
-        <div class="input-row">
+        <div class="field-row">
           <label>연 운영비</label>
-          <input type="number" id="opex_annual" value="1.0" step="0.1" min="0">
-          <span class="input-unit">백만원</span>
+          <input type="number" id="opex_annual" value="1.2" step="0.1" min="0" disabled style="opacity:0.5">
+          <span class="unit">백만원</span>
         </div>
-        <div class="input-row">
+        <div class="avg-row">
+          <input type="checkbox" id="cb_opex" data-avg-checkbox data-target="opex_annual" checked>
+          <label for="cb_opex">✅ 평균값 <span class="tag">1.2백만원/100kW</span></label>
+        </div>
+        <div class="remark">
+          <strong>※ 포함 항목</strong>:<br>
+          • 세무 기장료 (월 5~15만원, 복식부기 시 더 높음)<br>
+          • 전기안전관리자 위탁료 (월 5~20만원, 용량별)<br>
+          • 보험료 (화재·풍수해)<br>
+          • 통신비·모니터링 시스템 유지비
+        </div>
+        
+        <div class="field-row">
           <label>연 임대료</label>
           <input type="number" id="rent" value="0" step="0.1" min="0">
-          <span class="input-unit">백만원</span>
+          <span class="unit">백만원</span>
         </div>
+        <p style="font-size:11px; color:var(--text-muted); margin:-2px 0 0 140px">토지 임차 시 입력</p>
       </div>
 
       <!-- [5] 수수료 -->
       <div class="input-section">
         <h3>📋 5. 부대 수수료</h3>
-        <div class="input-row">
+        <div class="field-row">
           <label>수수료 비율</label>
-          <input type="number" id="fee_ratio" value="10.0" step="0.5" min="0" max="30">
-          <span class="input-unit">%</span>
+          <input type="number" id="fee_ratio" value="10.0" step="0.5" min="0" max="30" disabled style="opacity:0.5">
+          <span class="unit">%</span>
         </div>
-        <div style="text-align:right; margin-top:4px">
-          <button class="btn-small" id="btn_default_fee">통상 (10%)</button>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_fee" data-avg-checkbox data-target="fee_ratio" checked>
+          <label for="cb_fee">✅ 평균값 <span class="tag">10% (한전인입비 상승 반영)</span></label>
         </div>
-        <div class="info-box" style="margin-top:14px; margin-bottom:0">
-          <strong>수수료 항목</strong>: 한전 인입비(계통접속 분담금), 인허가비, 설계·감리, 대출 취급수수료, 보험, 법무·회계 자문 등<br>
-          <span style="color:#fbbf24">※ 2026년 기준 한전 인입비 상승으로 통상 10% 수준</span>
+        <div class="info-box" style="margin-top:8px; margin-bottom:0">
+          한전 계통접속 분담금(인입비), 발전사업 허가비, 설계·감리, 대출 취급수수료, 인허가 자문료, 보험, 법무·회계
         </div>
       </div>
 
-      <!-- [6] 재무 가정 -->
+      <!-- [6] 재무/세금 -->
       <div class="input-section">
-        <h3>📊 6. 재무 가정</h3>
-        <div class="input-row">
-          <label>물가상승률</label>
-          <input type="number" id="inflation" value="3.0" step="0.1" min="0">
-          <span class="input-unit">%</span>
+        <h3>📊 6. 재무·세금 가정</h3>
+        
+        <div class="field-row">
+          <label>물가상승률<span class="tip" data-tip="한국은행 2024-2025 CPI 평균 2.2%. 운영비·임대료에 항상 반영.">?</span></label>
+          <input type="number" id="inflation" value="2.2" step="0.1" min="0" disabled style="opacity:0.5">
+          <span class="unit">%</span>
         </div>
-        <div class="input-row">
-          <label>법인세율</label>
-          <input type="number" id="tax_rate" value="11.0" step="0.5" min="0" max="50">
-          <span class="input-unit">%</span>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_inf" data-avg-checkbox data-target="inflation" checked>
+          <label for="cb_inf">✅ 평균값 <span class="tag">2.2% (한국 CPI)</span></label>
         </div>
-        <div class="input-row">
-          <label>할인율(WACC)</label>
-          <input type="number" id="wacc" value="5.0" step="0.1" min="0">
-          <span class="input-unit">%</span>
+        <div class="avg-row" style="margin-bottom:18px">
+          <input type="checkbox" id="inflation_to_sales">
+          <label for="inflation_to_sales">🔁 전력판매가에도 물가 반영 (기본 OFF · 고정계약 기준)</label>
         </div>
+        
+        <!-- 사업자 유형 -->
+        <div class="radio-group">
+          <input type="radio" name="biz_type" id="bt_corp" value="corporate" checked>
+          <label for="bt_corp">법인사업자</label>
+          <input type="radio" name="biz_type" id="bt_personal" value="personal">
+          <label for="bt_personal">개인사업자</label>
+        </div>
+        
+        <div id="tax_corp_box">
+          <div class="remark">
+            <strong>💼 법인사업자</strong>: 중소기업 단일세율 11% 적용 (과표 2억 이하)<br>
+            ※ 법인은 매출 변동과 무관하게 순이익 × 11%
+          </div>
+        </div>
+        
+        <div id="tax_personal_box" style="display:none">
+          <div class="remark">
+            <strong>👤 개인사업자 자동 분기</strong>:<br>
+            • 수입 <strong>3,600만원 미만</strong>: 단순경비율 <strong>95.1%</strong> 공제<br>
+            • 수입 <strong>3,600만~1.5억</strong>: 단순경비율 <strong>87.26%</strong> 공제<br>
+            • 수입 <strong>1.5억~3.85억</strong>: 단순경비율 <strong>84.32%</strong> 공제<br>
+            • 수입 <strong>3.85억 이상</strong>: 복식부기 의무 → 기준경비율 23.8%<br>
+            + 종합소득세 누진세율 (6~45%) 자동 적용<br>
+            + 지방소득세 10% 가산
+          </div>
+        </div>
+        
+        <div class="field-row" style="margin-top:12px">
+          <label>할인율(WACC)<span class="tip" data-tip="개인의 조달금리 + 기대수익률. 본인이 이 투자에 기대하는 최소 수익률. 통상 4~7%. NPV 계산에 사용.">?</span></label>
+          <input type="number" id="wacc" value="5.0" step="0.1" min="0" disabled style="opacity:0.5">
+          <span class="unit">%</span>
+        </div>
+        <div class="avg-row">
+          <input type="checkbox" id="cb_wacc" data-avg-checkbox data-target="wacc" checked>
+          <label for="cb_wacc">✅ 평균값 <span class="tag">5.0%</span></label>
+        </div>
+        <p style="font-size:11px; color:var(--text-muted); margin:-2px 0 0 140px">
+          💡 할인율 = 자기자본이 기대하는 최소 수익률
+        </p>
       </div>
     </div>
 
-    <!-- 우측: 결과 영역 -->
+    <!-- 결과 -->
     <div>
       <div class="result-sticky">
         <div class="result-card">
           <h3>🎯 핵심 지표</h3>
-          <div class="result-row">
-            <span class="k">Project IRR</span>
-            <span class="v" id="r_project_irr">--</span>
-          </div>
-          <div class="result-row">
-            <span class="k">Equity IRR</span>
-            <span class="v" id="r_equity_irr" style="color:var(--green)">--</span>
-          </div>
-          <div class="result-row">
-            <span class="k">NPV (20년)</span>
-            <span class="v" id="r_npv">--</span>
-          </div>
-          <div class="result-row">
-            <span class="k">투자 회수기간</span>
-            <span class="v" id="r_payback">--</span>
-          </div>
-
+          <div class="result-row"><span class="k">Project IRR</span><span class="v" id="r_project_irr">--</span></div>
+          <div class="result-row"><span class="k">Equity IRR</span><span class="v" id="r_equity_irr" style="color:var(--green)">--</span></div>
+          <div class="result-row"><span class="k">NPV (20년)</span><span class="v" id="r_npv">--</span></div>
+          <div class="result-row"><span class="k">투자 회수기간</span><span class="v" id="r_payback">--</span></div>
+          
           <div class="result-highlight">
             <div class="lbl">💼 필요 자기자본</div>
             <div class="val" id="r_equity">--</div>
-            <div style="font-size:12px; color:var(--text-secondary); margin-top:6px">
+            <div style="font-size:11.5px; color:var(--text-secondary); margin-top:6px">
               수수료 포함: <strong id="r_equity_with_fee" style="color:var(--text-primary)">--</strong>
             </div>
           </div>
         </div>
 
+        <!-- 세금 카드 -->
+        <div class="result-card tax-card">
+          <h3>💰 세금 (연간)</h3>
+          <div class="result-row"><span class="k">1년차 세금</span><span class="v" id="r_year1_tax">--</span></div>
+          <div class="result-row"><span class="k">2년차 세금</span><span class="v" id="r_year2_tax">--</span></div>
+          <div class="result-row"><span class="k">20년 평균</span><span class="v" id="r_avg_tax">--</span></div>
+          <div class="result-row"><span class="k">20년 총 세금</span><span class="v" id="r_total_tax">--</span></div>
+          <p style="font-size:11px; color:var(--text-muted); margin-top:10px; text-align:center">
+            <span id="r_tax_desc">--</span><br>
+            ※ 계산은 참고용이며, 개인 상황에 따라 다름
+          </p>
+        </div>
+
         <div class="result-card" style="background: rgba(255,255,255,0.03); border-color: var(--border)">
           <h3>💡 현금 필요 총액</h3>
-          <div class="result-row">
-            <span class="k">투자비 원가</span>
-            <span class="v" id="r_total_capex">--</span>
-          </div>
-          <div class="result-row">
-            <span class="k">수수료</span>
-            <span class="v" id="r_fee">--</span>
-          </div>
-          <div class="result-row" style="border-top:1px solid var(--blue); padding-top:12px; margin-top:6px">
+          <div class="result-row"><span class="k">투자비</span><span class="v" id="r_total_capex">--</span></div>
+          <div class="result-row"><span class="k">수수료</span><span class="v" id="r_fee">--</span></div>
+          <div class="result-row" style="border-top:1px solid var(--blue); padding-top:10px; margin-top:4px">
             <span class="k" style="color:var(--text-primary); font-weight:600">총 소요 자금</span>
             <span class="v" id="r_total_need" style="color:var(--blue)">--</span>
           </div>
         </div>
 
-        <button class="btn btn-primary" id="btn_pdf" style="width:100%">
-          📄 결과 저장 (인쇄/PDF)
-        </button>
+        <button class="btn btn-primary" id="btn_pdf" style="width:100%">📄 인쇄 / PDF 저장</button>
         <p style="font-size:11px; color:var(--text-muted); text-align:center; margin-top:8px">
-          ※ 회원가입 기능은 준비 중입니다. 현재는 브라우저 인쇄로 저장하세요.
+          ※ 회원가입 기능 준비 중 · 현재는 브라우저 인쇄로 저장
         </p>
       </div>
     </div>
   </div>
 
-  <!-- 상세 분석 -->
+  <!-- 차트 -->
   <div class="chart-wrap" style="margin-top:32px">
     <h3>📈 20년 현금흐름 추이 <span style="font-size:13px; color:var(--text-muted); font-weight:normal">(백만원)</span></h3>
     <canvas id="cashflowChart"></canvas>
   </div>
 
+  <!-- 테이블 -->
   <div class="chart-wrap">
     <h3>📋 연도별 상세 (손익계산서)</h3>
     <div style="overflow-x:auto">
-      <table class="table" style="min-width:800px">
+      <table class="table" style="min-width:900px">
         <thead>
           <tr>
             <th>연도</th>
@@ -297,25 +452,43 @@
             <th style="text-align:right">매출원가</th>
             <th style="text-align:right">영업이익</th>
             <th style="text-align:right">이자</th>
+            <th style="text-align:right">세금</th>
             <th style="text-align:right">순이익</th>
             <th style="text-align:right">FCFE</th>
           </tr>
         </thead>
-        <tbody id="yearlyTableBody">
-          <tr><td colspan="8" style="text-align:center; color:var(--text-muted)">계산 중...</td></tr>
-        </tbody>
+        <tbody id="yearlyTableBody"></tbody>
       </table>
     </div>
     <p style="font-size:12px; color:var(--text-muted); margin-top:12px">
-      * 모든 금액 단위: 백만원 · FCFE = 주주에게 돌아가는 현금흐름
+      * 금액 단위: 백만원 · FCFE = 자기자본에게 돌아가는 현금흐름
     </p>
+  </div>
+
+  <!-- 세무 참고 자료 -->
+  <div class="info-box" style="margin-top:24px">
+    <strong>📎 세무 관련 공식 자료</strong><br>
+    • 국세청 홈택스: <a href="https://hometax.go.kr" target="_blank" style="color:#93c5fd; text-decoration:underline">hometax.go.kr</a> 
+      → 조회/발급 → 기타조회 → 기준경비율·단순경비율<br>
+    • 업종코드: <strong>401000 태양광 발전업</strong><br>
+    • 2024 귀속 단순경비율: 매출 구간별 84.32% ~ 95.1%
+  </div>
+
+  <!-- 세무 전문가 연결 -->
+  <div class="expert-section">
+    <h3>💼 세무 전문가 상담이 필요하신가요?</h3>
+    <p>본 계산기는 참고용이며, 실제 세금은 개인 상황·다른 소득 합산 여부·공제 항목에 따라 크게 달라집니다.<br>
+    발전사업 전문 세무사 연결 서비스를 준비 중입니다.</p>
+    <a href="mailto:contact@renewables.co.kr?subject=세무 전문가 연결 요청" class="btn btn-primary">
+      ✉️ 사전 신청하기
+    </a>
   </div>
 
   <div class="info-box" style="margin-top:24px">
     <strong>⚠️ 면책 조항</strong><br>
-    본 분석 결과는 입력된 가정값 기반의 참고용 시뮬레이션이며, 실제 사업 결과와 다를 수 있습니다. 
-    투자 의사결정 시 반드시 전문가와 상담하시기 바랍니다. 
-    SMP·REC 가격은 시장 상황에 따라 변동되며, 본 계산기는 고정가격 기준의 단순 모델입니다.
+    본 분석은 입력 가정 기반 참고용 시뮬레이션입니다. 실제 사업 결과와 다를 수 있습니다.
+    SMP·REC는 시장 변동성이 크고, 세금은 개인 상황과 정책에 따라 변합니다.
+    투자 결정 시 전문가 상담을 권장합니다.
   </div>
 </div>
 
@@ -327,7 +500,7 @@
     <a href="/about.html">소개</a>
     <a href="mailto:contact@renewables.co.kr">문의</a>
   </div>
-  <p>© 2026 Renewables · 데이터 출처: 전력거래소(KPX), 한국에너지공단</p>
+  <p>© 2026 Renewables · 데이터: KPX·에너지공단·한국은행·국세청</p>
 </footer>
 
 <script src="assets/calculator.js"></script>
