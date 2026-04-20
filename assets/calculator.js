@@ -87,7 +87,7 @@ const PRESETS = {
   },
   smp_price: () => setVal('smp_price', ASSUMPTIONS.smp.annual_avg_krw_per_kwh.toFixed(2)),
   rec_price: () => setVal('rec_price', ASSUMPTIONS.rec.spot_avg_krw),
-  rec_weight: () => setVal('rec_weight', '1.0'),
+  rec_weight: () => setVal('rec_weight', '1.2'),
   utilization_pct: () => {
     const pct = (ASSUMPTIONS.operation.default_utilization * 100).toFixed(2);
     document.getElementById('utilization_pct').value = pct;
@@ -126,7 +126,7 @@ function fillAllDefaults() {
   document.getElementById('repay_years').value = A.loan.default_repay_years;
   document.getElementById('smp_price').value = A.smp.annual_avg_krw_per_kwh.toFixed(2);
   document.getElementById('rec_price').value = A.rec.spot_avg_krw;
-  document.getElementById('rec_weight').value = 1.0;
+  document.getElementById('rec_weight').value = 1.2;
   document.getElementById('utilization_pct').value = (A.operation.default_utilization * 100).toFixed(2);
   document.getElementById('utilization_hr').value = A.operation.default_hours_per_day.toFixed(2);
   document.getElementById('module_decay').value = (A.operation.module_decay_per_year * 100).toFixed(2);
