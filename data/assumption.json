@@ -1,0 +1,82 @@
+{
+  "last_updated": "2026-04-20",
+  "admin_note": "Admin만 수정 가능. 사용자는 UI에서 덮어쓸 수 있음.",
+  
+  "smp": {
+    "annual_avg_krw_per_kwh": 111.96,
+    "source": "한국전력거래소(KPX) 2025년 육지 SMP 일평균의 연평균",
+    "period": "2025-01-01 ~ 2025-12-31"
+  },
+  
+  "rec": {
+    "spot_avg_krw": 70000,
+    "source": "한국에너지공단 REC 현물거래 2025년 평균 (추정)",
+    "weights": {
+      "under_100kw": 1.2,
+      "100kw_to_3mw": 1.0,
+      "over_3mw": 0.8,
+      "building_solar": 1.5,
+      "floating_solar_under_100kw": 1.6
+    }
+  },
+  
+  "fit_integrated": {
+    "under_100kw": 195.96,
+    "100kw_to_3mw": 181.96,
+    "note": "SMP연평균 + (REC×가중치/1000)"
+  },
+  
+  "capex": {
+    "default_per_kw_krw": 2300000,
+    "default_total_100kw_krw": 230000000,
+    "contingency_ratio": 0.05,
+    "note": "100kW 기준 통상 2.3억, 200kW 이상은 프로젝트별 편차 큼"
+  },
+  
+  "loan": {
+    "default_ratio": 0.7,
+    "default_interest_rate": 0.05,
+    "default_grace_years": 2,
+    "default_repay_years": 18,
+    "max_years": 25
+  },
+  
+  "operation": {
+    "default_utilization": 0.1667,
+    "utilization_by_region": {
+      "서울": 0.142, "경기": 0.148, "강원": 0.155,
+      "충북": 0.155, "충남": 0.158, "전북": 0.167,
+      "전남": 0.175, "경북": 0.165, "경남": 0.170,
+      "제주": 0.168, "인천": 0.145, "광주": 0.170,
+      "대전": 0.158, "대구": 0.165, "울산": 0.165, "부산": 0.160
+    },
+    "module_decay_per_year": 0.005,
+    "opex_per_kw_initial_krw": 10000,
+    "rent_default": 0
+  },
+  
+  "fees": {
+    "default_ratio": 0.10,
+    "note": "한전 인입비, 인허가, 설계감리, 중도상환수수료 등. 2026년 기준 통상 10%",
+    "items": [
+      "한전 계통 접속공사 분담금",
+      "발전사업 허가 수수료",
+      "설계·감리비",
+      "인허가 자문료",
+      "대출 취급수수료",
+      "각종 인지세·등록세",
+      "보험료"
+    ]
+  },
+  
+  "financial": {
+    "inflation": 0.03,
+    "tax_rate": 0.11,
+    "wacc": 0.05,
+    "depreciation_years": 20,
+    "project_years": 20
+  },
+  
+  "large_project_threshold_kw": 1000,
+  "large_project_message": "1MW 이상 대용량 프로젝트는 별도 맞춤 분석이 필요합니다. contact@renewables.co.kr 로 문의해주세요."
+}
