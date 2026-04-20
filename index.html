@@ -4,139 +4,133 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Renewables - 신재생에너지 데이터 플랫폼</title>
-<meta name="description" content="태양광·풍력 발전사업자를 위한 SMP·REC 가격 정보 플랫폼">
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Pretendard', 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .box {
-    text-align: center;
-    padding: 60px 40px;
-    max-width: 600px;
-    animation: fadeIn 1s ease-out;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .emoji {
-    font-size: 80px;
-    margin-bottom: 24px;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-  }
-  h1 {
-    font-size: 56px;
-    margin-bottom: 12px;
-    background: linear-gradient(90deg, #3b82f6, #10b981);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    font-weight: 800;
-    letter-spacing: -1px;
-  }
-  .tagline {
-    color: #94a3b8;
-    font-size: 20px;
-    margin-bottom: 40px;
-    font-weight: 400;
-  }
-  .status {
-    display: inline-block;
-    background: rgba(16, 185, 129, 0.15);
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    color: #10b981;
-    padding: 10px 20px;
-    border-radius: 24px;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 32px;
-  }
-  .status .dot {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background: #10b981;
-    border-radius: 50%;
-    margin-right: 8px;
-    animation: blink 1.5s infinite;
-  }
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-  }
-  .features {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin-top: 20px;
-  }
-  .feature {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 20px 12px;
-    transition: all 0.3s;
-  }
-  .feature:hover {
-    background: rgba(59, 130, 246, 0.1);
-    border-color: rgba(59, 130, 246, 0.3);
-    transform: translateY(-2px);
-  }
-  .feature-icon { font-size: 28px; margin-bottom: 8px; }
-  .feature-text { font-size: 13px; color: #cbd5e1; }
-  .footer {
-    margin-top: 48px;
-    color: #64748b;
-    font-size: 13px;
-  }
-  .footer a { color: #3b82f6; text-decoration: none; }
-  @media (max-width: 600px) {
-    h1 { font-size: 40px; }
-    .tagline { font-size: 16px; }
-    .features { grid-template-columns: 1fr; }
-  }
-</style>
+<meta name="description" content="태양광·풍력 발전사업자를 위한 실시간 SMP·REC 가격 정보 플랫폼. 매일 아침 7시 텔레그램 알림 무료 제공.">
+<meta name="keywords" content="SMP, REC, 신재생에너지, 태양광, 풍력, 전력시장, 발전사업자">
+<meta property="og:title" content="Renewables - 신재생에너지 데이터 플랫폼">
+<meta property="og:description" content="태양광·풍력 발전사업자를 위한 SMP·REC 데이터">
+<link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <div class="box">
-    <div class="emoji">⚡</div>
-    <h1>Renewables</h1>
-    <p class="tagline">신재생 발전사업자를 위한<br>SMP·REC 데이터 플랫폼</p>
-    
-    <div class="status">
-      <span class="dot"></span>서비스 준비 중
-    </div>
-    
-    <div class="features">
-      <div class="feature">
-        <div class="feature-icon">📊</div>
-        <div class="feature-text">실시간 SMP 분석</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">♻️</div>
-        <div class="feature-text">REC 가격 추적</div>
-      </div>
-      <div class="feature">
-        <div class="feature-icon">🔔</div>
-        <div class="feature-text">매일 알림 발송</div>
-      </div>
-    </div>
-    
-    <div class="footer">
-      <p>곧 정식 오픈합니다 · 문의: <a href="mailto:contact@renewables.co.kr">contact@renewables.co.kr</a></p>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/" class="logo">⚡ Renewables</a>
+    <div class="nav-links">
+      <a href="/dashboard.html">대시보드</a>
+      <a href="/about.html">소개</a>
+      <a href="#subscribe">구독</a>
     </div>
   </div>
+</nav>
+
+<section class="hero">
+  <div class="status"><span class="dot"></span>실시간 서비스 운영 중</div>
+  <h1 style="margin-top:24px">Renewables</h1>
+  <p class="tagline">신재생 발전사업자를 위한<br>SMP·REC 데이터 플랫폼</p>
+  <div class="hero-cta">
+    <a href="/dashboard.html" class="btn btn-primary">📊 대시보드 보기</a>
+    <a href="#subscribe" class="btn btn-secondary">🔔 무료 구독</a>
+  </div>
+</section>
+
+<!-- 실시간 데이터 카드 -->
+<div class="container">
+  <h2 class="section-title">오늘의 전력시장</h2>
+  <p class="section-subtitle" id="updated-time">데이터 로딩 중...</p>
+
+  <div class="grid grid-2">
+    <div class="live-card">
+      <div class="label">육지 SMP (평균)</div>
+      <div class="value" id="smp-value">--</div>
+      <div class="unit">원 / kWh</div>
+      <div class="change" id="smp-change">--</div>
+    </div>
+    <div class="live-card">
+      <div class="label">REC 가격</div>
+      <div class="value" id="rec-value">--</div>
+      <div class="unit">원 / REC</div>
+      <div class="change" id="rec-change">--</div>
+    </div>
+  </div>
+
+  <!-- 30일 통계 -->
+  <div class="stats-bar" style="margin-top:24px">
+    <div class="stat-item">
+      <div class="num" id="stat-avg">--</div>
+      <div class="txt">최근 30일 평균 SMP</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="stat-max">--</div>
+      <div class="txt">30일 최대 SMP</div>
+    </div>
+    <div class="stat-item">
+      <div class="num" id="stat-min">--</div>
+      <div class="txt">30일 최소 SMP</div>
+    </div>
+  </div>
+</div>
+
+<!-- 주요 기능 -->
+<div class="container">
+  <h2 class="section-title">주요 기능</h2>
+  <p class="section-subtitle">발전사업자가 필요한 모든 정보를 한 곳에서</p>
+
+  <div class="grid grid-3">
+    <div class="card feature">
+      <span class="feature-icon">📊</span>
+      <h3>실시간 모니터링</h3>
+      <p>매일 자동 갱신되는 SMP·REC 가격과 30일 추이 차트를 확인하세요.</p>
+    </div>
+    <div class="card feature">
+      <span class="feature-icon">🔔</span>
+      <h3>매일 아침 알림</h3>
+      <p>텔레그램 봇이 매일 오전 7시, 어제의 SMP·REC 데이터를 알려드립니다.</p>
+    </div>
+    <div class="card feature">
+      <span class="feature-icon">♻️</span>
+      <h3>REC 가격 추적</h3>
+      <p>태양광/풍력 사업자를 위한 현물 REC 가격 변동 내역을 제공합니다.</p>
+    </div>
+    <div class="card feature">
+      <span class="feature-icon">📈</span>
+      <h3>수익 시뮬레이션</h3>
+      <p>발전량 × SMP + REC 수익을 자동 계산해 월 수익을 예측합니다. (준비중)</p>
+    </div>
+    <div class="card feature">
+      <span class="feature-icon">📰</span>
+      <h3>시장 인사이트</h3>
+      <p>계통한계가격 변동 원인과 정책 이슈를 블로그로 정리해 드립니다.</p>
+    </div>
+    <div class="card feature">
+      <span class="feature-icon">💾</span>
+      <h3>데이터 다운로드</h3>
+      <p>원하는 기간의 SMP·REC 데이터를 CSV로 내려받아 활용할 수 있습니다. (준비중)</p>
+    </div>
+  </div>
+</div>
+
+<!-- 구독 CTA -->
+<div class="container" id="subscribe">
+  <div class="card" style="text-align:center; padding:60px 32px; background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(16,185,129,0.1)); border-color: rgba(59,130,246,0.3);">
+    <h2 class="section-title" style="margin-bottom:16px">무료 텔레그램 구독</h2>
+    <p class="section-subtitle" style="margin-bottom:32px">매일 아침 7시, 핵심 전력시장 데이터를 휴대폰으로 받아보세요</p>
+    <a href="#" class="btn btn-primary" id="telegram-btn">📱 텔레그램 봇 구독하기</a>
+    <p style="margin-top:20px; font-size:13px; color:var(--text-muted)">※ 봇 런칭 준비 중입니다. 곧 공개됩니다.</p>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-links">
+    <a href="/">홈</a>
+    <a href="/dashboard.html">대시보드</a>
+    <a href="/about.html">소개</a>
+    <a href="mailto:contact@renewables.co.kr">문의</a>
+  </div>
+  <p>© 2026 Renewables · 데이터 출처: 전력거래소(KPX)</p>
+  <p style="margin-top:8px; font-size:12px;">본 사이트의 가격 정보는 참고용이며, 실거래 시 공식 자료를 확인하시기 바랍니다.</p>
+</footer>
+
+<script src="assets/app.js"></script>
 </body>
 </html>
