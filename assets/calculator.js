@@ -12,8 +12,8 @@ const FALLBACK = {
   capex: { default_per_kw_krw: 2300000 },
   loan: { default_ratio: 0.7, default_interest_rate: 0.05, default_grace_years: 2, default_repay_years: 18 },
   operation: {
-    default_utilization: 0.1667,
-    default_hours_per_day: 4.0,
+    default_utilization: 0.1458,
+    default_hours_per_day: 3.5,
     module_decay_per_year: 0.002,
     opex_default_m_krw_per_100kw: 1.2
   },
@@ -120,7 +120,7 @@ function fillAllDefaults() {
   const A = ASSUMPTIONS;
   document.getElementById('capacity_kw').value = 100;
   document.getElementById('capex_total').value = 230;
-  document.getElementById('loan_amount').value = 161;
+  document.getElementById('loan_amount').value = 160;
   document.getElementById('interest_rate').value = (A.loan.default_interest_rate * 100).toFixed(1);
   document.getElementById('grace_years').value = A.loan.default_grace_years;
   document.getElementById('repay_years').value = A.loan.default_repay_years;
