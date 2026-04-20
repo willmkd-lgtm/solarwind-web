@@ -35,8 +35,8 @@
   },
   
   "operation": {
-    "default_utilization": 0.1667,
-    "default_hours_per_day": 4.0,
+    "default_utilization": 0.1458,
+    "default_hours_per_day": 3.5,
     "module_decay_per_year": 0.002,
     "opex_default_m_krw_per_100kw": 1.2,
     "rent_default": 0
