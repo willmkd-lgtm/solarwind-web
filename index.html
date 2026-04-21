@@ -11,7 +11,7 @@
 <meta name="keywords" content="SMP, REC, 신재생에너지, 태양광, 풍력, 전력시장, 발전사업자">
 <meta property="og:title" content="Renewables - 신재생에너지 데이터 플랫폼">
 <meta property="og:description" content="태양광·풍력 발전사업자를 위한 SMP·REC 데이터">
-<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="common.css">
 </head>
 <body>
 
@@ -148,6 +148,19 @@
 
 <script>
   renderAuthHeader();
+    (function(){
+    const path = location.pathname.split('/').pop() || 'index.html';
+    const map = {
+      'index.html':     'home',
+      'dashboard.html': 'dashboard',
+      'analysis.html':  'analysis',
+      'board.html':     'board',
+    };
+    const current = map[path];
+    document.querySelectorAll('.main-nav a').forEach(a=>{
+      if(a.dataset.page === current) a.classList.add('active');
+    });
+  })();
 </script>
 </body>
 </html>
