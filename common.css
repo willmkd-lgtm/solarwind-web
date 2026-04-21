@@ -1,0 +1,36 @@
+.site-header{
+  position:sticky; top:0; z-index:100;
+  background:#0f172a; color:#fff;
+  border-bottom:1px solid #1e293b;
+  box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+.nav-wrap{
+  max-width:1200px; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 20px; gap:20px;
+}
+.brand{
+  font-weight:700; font-size:18px; color:#fff; text-decoration:none;
+  white-space:nowrap;
+}
+.main-nav{ display:flex; gap:4px; flex:1; margin-left:16px; }
+.main-nav a{
+  color:#cbd5e1; text-decoration:none; padding:8px 14px;
+  border-radius:6px; font-size:14px; transition:.15s;
+}
+.main-nav a:hover{ background:#1e293b; color:#fff; }
+.main-nav a.active{ background:#2563eb; color:#fff; }
+.auth-area{ display:flex; align-items:center; gap:10px; font-size:14px; }
+.auth-area a, .auth-area button{
+  color:#cbd5e1; background:none; border:1px solid #334155;
+  padding:6px 12px; border-radius:6px; cursor:pointer; text-decoration:none;
+}
+.auth-area a:hover, .auth-area button:hover{ background:#1e293b; color:#fff; }
+#userEmail{ color:#94a3b8; font-size:13px; }
+
+/* 모바일 대응 */
+@media (max-width:640px){
+  .nav-wrap{ flex-wrap:wrap; padding:10px 14px; }
+  .main-nav{ order:3; width:100%; margin:8px 0 0; overflow-x:auto; }
+  .main-nav a{ padding:6px 10px; font-size:13px; }
+}
