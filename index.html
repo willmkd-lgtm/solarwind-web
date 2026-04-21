@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="/assets/supabase-client.js"></script>
-<script src="/assets/auth.js"></script>
-<title>Renewables - 신재생에너지 데이터 플랫폼</title>
-<meta name="description" content="태양광·풍력 발전사업자를 위한 실시간 SMP·REC 가격 정보 플랫폼. 매일 아침 7시 텔레그램 알림 무료 제공.">
-<meta name="keywords" content="SMP, REC, 신재생에너지, 태양광, 풍력, 전력시장, 발전사업자">
-<meta property="og:title" content="Renewables - 신재생에너지 데이터 플랫폼">
-<meta property="og:description" content="태양광·풍력 발전사업자를 위한 SMP·REC 데이터">
-<link rel="stylesheet" href="/common.css">
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="/assets/supabase-client.js"></script>
-<script defer src="/assets/auth.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Renewables - 신재생에너지 데이터 플랫폼</title>
+  
+  <meta name="description" content="태양광·풍력 발전사업자를 위한 실시간 SMP·REC 가격 정보 플랫폼. 매일 아침 7시 텔레그램 알림 무료 제공.">
+  <meta name="keywords" content="SMP, REC, 신재생에너지, 태양광, 풍력, 전력시장, 발전사업자">
+  <meta property="og:title" content="Renewables - 신재생에너지 데이터 플랫폼">
+  <meta property="og:description" content="태양광·풍력 발전사업자를 위한 SMP·REC 데이터">
+  
+  <link rel="stylesheet" href="/common.css">
+  
+  <!-- ⚠️ 한 번씩만! -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="/assets/supabase-client.js"></script>
+  <script defer src="/assets/auth.js"></script>
 </head>
+
 <body>
 
 <nav class="nav">
@@ -147,14 +149,12 @@
 <script src="/assets/app.js"></script>
 <script src="/assets/dashboard.js"></script>
 <script src="/assets/load-data.js"></script>
-<script src="/common.js"></script>
   
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     if (typeof renderAuthHeader === 'function') renderAuthHeader();
   });
 </script>
-
 
 <script>
   // 현재 파일명 기준 active 표시
