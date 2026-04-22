@@ -541,17 +541,17 @@ function initialize() {
   updateTaxUI();
 
   // 🎯 JSON 로드 시도 (실패해도 fallback 사용)
-  fetch('/data/assumptions.json?t=' + Date.now())
+  fetch('/data/assumption.json?t=' + Date.now())
     .then(res => {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       return res.json();
     })
     .then(data => {
       ASSUMPTIONS = data;
-      console.log('[Renewables] assumptions.json 로드 성공');
+      console.log('[Renewables] assumption.json 로드 성공');
     })
     .catch(err => {
-      console.warn('[Renewables] assumptions.json 로드 실패, fallback 사용:', err.message);
+      console.warn('[Renewables] assumption.json 로드 실패, fallback 사용:', err.message);
     });
 
   console.log('[Renewables] 초기화 완료 ✅');
