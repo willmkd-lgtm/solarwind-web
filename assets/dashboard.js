@@ -1,4 +1,6 @@
-// Renewables - 대시보드 차트 & 표 스크립트
+// Renewables - 대시보드 차트 & 표 스크립트 (v2)
+console.log('[dashboard.js] v2 loaded');  // ← 로딩 확인용
+
 document.addEventListener('renewablesDataLoaded', function(e) {
   const data = e.detail;
 
@@ -6,9 +8,16 @@ document.addEventListener('renewablesDataLoaded', function(e) {
   const ctx = document.getElementById('smpChart');
   if (ctx && data.chart) {
     
-    // ⭐ 추가: 기존 차트가 있으면 파괴 (Canvas 재사용 에러 방지)
-    const existingChart = Chart.getChart(ctx);
-    if (existingChart) existingChart.destroy();
+    // 🛡️ 이중 안전장치: 기존 차트 완전 제거
+    try {
+      const existing = Chart.getChart(ctx);
+      if (existing) {
+        existing.destroy();
+        console.log('[dashboard.js] 기존 차트 파괴됨');
+      }
+    } catch (err) {
+      console.warn('[dashboard.js] destroy 실패:', err);
+    }
     
     const labels = data.chart.map(d => d.date.slice(5));
     const avgData = data.chart.map(d => d.smp_avg);
@@ -98,7 +107,7 @@ document.addEventListener('renewablesDataLoaded', function(e) {
     });
   }
 
-  // ========== 일별 상세 표 (기존 그대로) ==========
+  // ========== 일별 상세 표 ==========
   const tbody = document.getElementById('tableBody');
   if (tbody && data.chart) {
     tbody.innerHTML = '';
