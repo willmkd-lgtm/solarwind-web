@@ -5,7 +5,12 @@ document.addEventListener('renewablesDataLoaded', function(e) {
   // ========== 30일 SMP 차트 ==========
   const ctx = document.getElementById('smpChart');
   if (ctx && data.chart) {
-    const labels = data.chart.map(d => d.date.slice(5));  // MM-DD
+    
+    // ⭐ 추가: 기존 차트가 있으면 파괴 (Canvas 재사용 에러 방지)
+    const existingChart = Chart.getChart(ctx);
+    if (existingChart) existingChart.destroy();
+    
+    const labels = data.chart.map(d => d.date.slice(5));
     const avgData = data.chart.map(d => d.smp_avg);
     const maxData = data.chart.map(d => d.smp_max);
     const minData = data.chart.map(d => d.smp_min);
@@ -93,11 +98,10 @@ document.addEventListener('renewablesDataLoaded', function(e) {
     });
   }
 
-  // ========== 일별 상세 표 ==========
+  // ========== 일별 상세 표 (기존 그대로) ==========
   const tbody = document.getElementById('tableBody');
   if (tbody && data.chart) {
     tbody.innerHTML = '';
-    // 최신순으로 정렬, 전체 표시
     const rows = data.chart.slice().reverse();
     rows.forEach(d => {
       const range = (d.smp_max - d.smp_min).toFixed(2);
