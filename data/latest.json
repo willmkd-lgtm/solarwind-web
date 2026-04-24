@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-24 08:32:58",
+  "updated_at": "2026-04-24 15:31:38",
   "latest": {
     "date": "2026-04-24",
     "smp": {
@@ -10,7 +10,7 @@
     },
     "rec": {
       "price": 72561,
-      "change_pct": 0.02
+      "change_pct": 0.0
     }
   },
   "stats_30d": {
